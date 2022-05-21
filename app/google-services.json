@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "261539056657",
+    "project_id": "avechat-b0e8a",
+    "storage_bucket": "avechat-b0e8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261539056657:android:8df8d6a6db1e43f05175b0",
+        "android_client_info": {
+          "package_name": "com.aula.im.youcef.kebiche.avechat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261539056657-m56t4v4t0grsdioqouhvt4sp7ljjl7dj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aula.im.youcef.kebiche.avechat",
+            "certificate_hash": "4bd9f2ceb94e4ef0d156d1285d1cd840b2ec3cc2"
+          }
+        },
+        {
+          "client_id": "261539056657-v73khkb72e9bke7qvg46923ehanc94mo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFa5gPRYKAuiPWKK7v0fH-ageQ1U_W1uw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "261539056657-v73khkb72e9bke7qvg46923ehanc94mo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
