@@ -140,6 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Map<String , Object> usr =  new HashMap<>();
                             usr.put("verified" , false );
                             usr.put("role" , "user");
+                            usr.put("display_name" , usernameVal);
 
                             // create a node in db
                             CollectionReference users =  db.collection("users");
