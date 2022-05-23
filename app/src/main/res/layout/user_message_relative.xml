@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="50dp"
+    android:padding="4dp"
+    >
+
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/user_message_shape"
+        android:id="@+id/userMessageLayout"
+        >
+
+        <TextView
+            android:id="@+id/userMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="6dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

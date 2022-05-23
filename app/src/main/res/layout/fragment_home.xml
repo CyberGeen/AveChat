@@ -15,14 +15,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView4"
+        <include layout="@layout/no_chat"
+            android:id="@+id/homeNoChatFound"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HOME"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="440dp" />
+            android:text="Button"
+            tools:layout_editor_absoluteX="158dp"
+            tools:layout_editor_absoluteY="378dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

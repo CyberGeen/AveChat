@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GroupChat">
+
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginTop="0dp"
+        android:background="@color/cyan"
+        android:id="@+id/groupChatToolBar">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/backbuttBtnGrpChat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_arrow_back_24"></ImageButton>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/groupImgInChat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_toRightOf="@id/backbuttBtnGrpChat"
+                android:src="@drawable/groupdefault" />
+
+            <TextView
+                android:id="@+id/grpNameChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/groupImgInChat"
+                android:text="Group Code"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"></TextView>
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/groupChatRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/insertMsgET"
+        android:layout_below="@id/groupChatToolBar"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/insertMsgET"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/send_message_shape"
+        android:hint="Your Message"
+        android:paddingLeft="10dp"
+        android:paddingRight="20dp"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/sendMsgBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/groupChatRecycler"
+        android:layout_marginLeft="-45dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/insertMsgET"
+        android:src="@drawable/sendicon" />
+
+
+</RelativeLayout>

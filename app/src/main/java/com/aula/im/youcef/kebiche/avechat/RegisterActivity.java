@@ -34,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,8 +136,6 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             //boolean emailVerified = false ;
-                            String chats[] = {} ;
-
                             Map<String , Object> usr =  new HashMap<>();
                             usr.put("verified" , false );
                             usr.put("role" , "user");
@@ -203,7 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(RegisterActivity.this, "Could'n upload the image", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RegisterActivity.this, "Couldn't upload the image", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                             }else{

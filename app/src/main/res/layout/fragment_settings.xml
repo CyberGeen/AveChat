@@ -24,7 +24,7 @@
             app:layout_constraintHorizontal_bias="0.0"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/settingsProfilePic"
+            app:layout_constraintTop_toTopOf="@+id/grpImgCreate"
             app:lottie_autoPlay="true"
             app:lottie_rawRes="@raw/settingsbg"
             app:lottie_repeatCount="1000"
@@ -32,7 +32,7 @@
             app:lottie_repeatMode="restart" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/settingsProfilePic"
+            android:id="@+id/grpImgCreate"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginTop="32dp"
@@ -54,7 +54,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/settingsProfilePic" />
+            app:layout_constraintTop_toBottomOf="@+id/grpImgCreate" />
 
         <TextView
             android:id="@+id/emailTVSettings"
@@ -72,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@+id/usernameTVSettings" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/loggoutBtnSettings"
+            android:id="@+id/createGrbBtn"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -125,7 +125,7 @@
             app:layout_constraintTop_toBottomOf="@+id/updateUsernameSettings" />
 
         <Button
-            android:id="@+id/updateBtnSettings"
+            android:id="@+id/joinGrpBtn"
             android:layout_width="209dp"
             android:layout_height="48dp"
             android:layout_marginTop="32dp"

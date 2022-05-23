@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:lottie_autoPlay="true"
+        app:lottie_rawRes="@raw/umpty"
+        app:lottie_repeatCount="1000" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:fontFamily="casual"
+        android:text="No chat Found"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/lottieAnimationView2"
+        app:layout_constraintStart_toEndOf="@+id/lottieAnimationView2"
+        app:layout_constraintTop_toTopOf="@+id/lottieAnimationView2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

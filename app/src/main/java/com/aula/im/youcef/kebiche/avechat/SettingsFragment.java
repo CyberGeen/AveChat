@@ -1,13 +1,19 @@
 package com.aula.im.youcef.kebiche.avechat;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -20,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -30,6 +37,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -39,6 +47,7 @@ public class SettingsFragment extends Fragment  {
 
     private FirebaseAuth mAuth;
     Uri photoUri ;
+    Uri profilePicUri = null ;
     ImageView pp;
     StorageReference storageReference;
     FirebaseUser user;
@@ -46,6 +55,7 @@ public class SettingsFragment extends Fragment  {
     EditText usernameET , emailET ;
     Button updateBtn ;
     private FirebaseFirestore db;
+    final int galleryReqCode = 396;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +86,6 @@ public class SettingsFragment extends Fragment  {
         user = mAuth.getCurrentUser();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,14 +94,28 @@ public class SettingsFragment extends Fragment  {
 
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if(requestCode == galleryReqCode){
+            if(resultCode == Activity.RESULT_OK){
+                profilePicUri = data.getData();
+                pp.setImageURI(profilePicUri);
+            }
+        }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final MaterialButton logoutBtn  = (MaterialButton) view.findViewById(R.id.loggoutBtnSettings);
+        final MaterialButton logoutBtn  = (MaterialButton) view.findViewById(R.id.createGrbBtn);
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,13 +127,12 @@ public class SettingsFragment extends Fragment  {
             }
         });
 
-
-        pp = (ImageView) view.findViewById(R.id.settingsProfilePic);
+        pp = (ImageView) view.findViewById(R.id.grpImgCreate);
         username = (TextView) view.findViewById(R.id.usernameTVSettings);
         email = (TextView) view.findViewById(R.id.emailTVSettings);
         usernameET = (EditText) view.findViewById(R.id.updateUsernameSettings);
         emailET = (EditText) view.findViewById(R.id.updateEmailSettings);
-        updateBtn = (Button) view.findViewById(R.id.updateBtnSettings);
+        updateBtn = (Button) view.findViewById(R.id.joinGrpBtn);
 
         db = FirebaseFirestore.getInstance();
 
@@ -130,6 +152,19 @@ public class SettingsFragment extends Fragment  {
             @Override
             public void onClick(View view) {
                 updateBtn.setClickable(true);
+            }
+        });
+
+        pp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateBtn.setClickable(true);
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, galleryReqCode);
+                } else {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK , MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(galleryIntent, galleryReqCode);
+                }
             }
         });
 
@@ -155,9 +190,8 @@ public class SettingsFragment extends Fragment  {
                         }
                     });
                 }
-                if(!usernameVal.isEmpty()) {
 
-                    //FIXME update db too
+                if(!usernameVal.isEmpty()) {
                     UserProfileChangeRequest userUpdate = new UserProfileChangeRequest.Builder().setDisplayName(usernameVal).build();
                     user.updateProfile(userUpdate).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -179,10 +213,46 @@ public class SettingsFragment extends Fragment  {
                             });
                         }
                     });
-
                 }
 
+                //TODO update profile pic :
+                if(profilePicUri != null ){
+                    StorageReference fileRef = storageReference.child(user.getUid());
+                    fileRef.putFile(profilePicUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
+                            // here we retrieve the uri of the pic from the db and then we set it for the profile
+
+                            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    //update the profile ;
+                                    // set the new values
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setPhotoUri(uri)
+                                            .build();
+
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("vvx", "User profile updated.");
+                                                        Toast.makeText(getContext(), "Profile Picture Updated", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                }
+                            });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Couldn't upload the image", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
 

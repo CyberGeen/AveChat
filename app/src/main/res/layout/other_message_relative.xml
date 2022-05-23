@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="50dp"
+    android:padding="4dp"
+    >
+
+    <TextView
+        android:id="@+id/otherMessageUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="username :"
+        android:layout_alignParentLeft="true"
+        android:padding="5dp"
+        />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/other_message_shape"
+        android:id="@+id/otherMessageLayout"
+        android:layout_below="@id/otherMessageUsername"
+        >
+
+        <TextView
+            android:id="@+id/otherMessageTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="6dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="lorem ipsum i dont know the rest"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

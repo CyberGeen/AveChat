@@ -15,14 +15,96 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="create"
-            app:layout_constraintBottom_toBottomOf="parent"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieBgCreate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/createbg"
+            app:lottie_repeatCount="1000" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/grpImgCreate"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginTop="32dp"
+            android:src="@drawable/groupdefault"
+            app:civ_border_color="#60BFC1"
+            app:civ_border_width="2dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/joinGrpET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:ems="10"
+            android:hint="Enter group code"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+
+            android:drawableLeft="@drawable/ic_baseline_group_24"
+            android:drawablePadding="5dp"
+
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/createGrbBtn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:backgroundTint="#00FFFFFF"
+            android:text="Create Group"
+            android:textColor="#60BFC1"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.516"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toBottomOf="@+id/grpImgCreate"
+            app:rippleColor="#60BFC1"
+            app:strokeColor="#60BFC1"
+            app:strokeWidth="2dp" />
+
+        <Button
+            android:id="@+id/joinGrpBtn"
+            android:layout_width="209dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="60dp"
+            android:backgroundTint="#60BFC1"
+            android:text="Join"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/joinGrpET" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:text="OR : "
+            android:textAllCaps="true"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/createGrbBtn" />
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
 </FrameLayout>

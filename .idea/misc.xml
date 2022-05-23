@@ -6,17 +6,22 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/ic_menu_camera.xml" value="0.148" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/other_message_shape.xml" value="0.2045" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/send_message_shape.xml" value="0.2045" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/settings_button_shape.xml" value="0.2115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/side_nav_bar.xml" value="0.148" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/user_chat_relative.xml" value="0.2045" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/drawable/user_message_shape.xml" value="0.2045" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_auth_handler_main.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_drawer_main.xml" value="0.16" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_group_chat.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_main.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_on_boarding_main.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_register.xml" value="0.4" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/activity_splash_screen.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/app_bar_drawer_main.xml" value="0.10029251984956122" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/content_drawer_main.xml" value="0.2" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_create.xml" value="0.16844805472424113" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_create.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_gallery.xml" value="0.10029251984956122" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_home.xml" value="0.16" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_settings.xml" value="0.25" />
@@ -24,7 +29,10 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_splash.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/fragment_view_pager.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/nav_header_drawer_main.xml" value="0.264" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/no_chat.xml" value="0.1586582048957389" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/other_message_relative.xml" value="0.536" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/slider.xml" value="0.20521590423257802" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/layout/user_message_relative.xml" value="0.1414141414141414" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/menu/activity_main_drawer.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20521590423257802" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/AveChat/app/src/main/res/menu/drawer_main.xml" value="0.20521590423257802" />
