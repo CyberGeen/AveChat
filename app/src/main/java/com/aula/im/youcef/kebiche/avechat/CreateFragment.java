@@ -30,6 +30,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,16 +40,25 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.nio.charset.Charset;
+import java.sql.Struct;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class CreateFragment extends Fragment {
 
     MaterialButton createGrpBtn ;
     Button joinGrpBtn ;
-    EditText joinGrpET ;
+    EditText joinGrpET , nameGrpET ;
     ImageView grpImg ;
     Uri grpImgUri = null ;
     private FirebaseFirestore db;
+    private FirebaseDatabase fdb;
     private FirebaseAuth mAuth;
     StorageReference storageReference;
     FirebaseUser user;
@@ -66,6 +77,7 @@ public class CreateFragment extends Fragment {
         user = mAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
+        fdb = FirebaseDatabase.getInstance("https://avechat-b0e8a-default-rtdb.europe-west1.firebasedatabase.app");
     }
 
     @Override
@@ -86,17 +98,35 @@ public class CreateFragment extends Fragment {
         joinGrpBtn = (Button) view.findViewById(R.id.joinGrpBtn);
         joinGrpET = (EditText) view.findViewById(R.id.joinGrpET);
         grpImg = (ImageView) view.findViewById(R.id.grpImgCreate);
+        nameGrpET = (EditText) view.findViewById(R.id.nameGrpET);
+
+
+        //FIXME on create :
+        // todo : go the user id table and retreive chat group codes
+        // todo : insert the new code
+        // todo : create new chat table and add the user to it
+        // todo : start the intent to the page with the code given
+
+
+        //FIXME on join
+        // todo : check if the code exists on the table if not show error
+        // todo : add the code to the user
+        // todo : goto chat table and add the new user to the list
 
         createGrpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            //TODO create group btn
+                String grpNameValue = nameGrpET.getText().toString();
+                Boolean grpNameIsValid = validateGrpName(grpNameValue);
+                if(!grpNameIsValid){
+                    nameGrpET.setError("invalid name");
+                    return;
+                }
+                //TODO start loading
+                // start the create process :
                 generatedString = genGroupCode(10);
-                //initCreateGroupChat();
-                createGroupChat(null);
+                initCreateGroupChat(grpNameValue);
             }
-
 
         });
 
@@ -115,6 +145,98 @@ public class CreateFragment extends Fragment {
 
                 //TODO join frp btn
 
+                db.collection("groups").document(joinGrpCode).get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    DocumentSnapshot doc = task.getResult();
+                                    Object data = doc.getData();
+                                    if(data == null ) {
+                                        // no group found
+                                        joinGrpET.setError("no such a group exist");
+                                    }else {
+                                        // first we update the list on the group collection field :
+                                        ArrayList<Map<String, Object>> users = (ArrayList<Map<String,Object>>) doc.get("users");
+                                        ArrayList<Object> newUsers = new ArrayList<Object>(Arrays.asList(users.toArray()));
+                                        if(newUsers.contains(user.getUid())){
+                                            Toast.makeText(getContext(), "you are already in the group", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        newUsers.add(user.getUid());
+                                        List<String> strings = new ArrayList<>(newUsers.size());
+                                        for (Object object : newUsers) {
+                                            strings.add(Objects.toString(object, null));
+                                        }
+                                        db.collection("groups").document(joinGrpCode).update("users" , strings )
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Log.d("updated" , "updated the users list on group");
+                                                    }
+                                                });
+
+                                        //we create new instance in realtime database
+                                        DatabaseReference dbr = fdb.getReference();
+                                        Date date = new Date();
+                                        Messages messages = new Messages("Hello!", user.getUid() , date.getTime() );
+                                        dbr.child(generatedString).push().setValue(messages);
+
+
+                                        // lastly we update the user own group collection
+                                        db.collection("users").document(user.getUid()).get()
+                                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                if (task.isSuccessful()){
+                                                                    DocumentSnapshot doc = task.getResult();
+                                                                    ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("groups");
+                                                                    if ( data == null) {
+                                                                        //update the user groups
+                                                                        db.collection("users").document(user.getUid()).update("groups" , Arrays.asList(joinGrpCode) )
+                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void unused) {
+                                                                                        Log.d("updated" , "new group array");
+                                                                                    }
+                                                                                });
+                                                                    }else {
+                                                                        //push the new code to the users groups
+                                                                        ArrayList<Object> newList = new ArrayList<Object>(Arrays.asList(data.toArray()));
+                                                                        if(newList.contains(joinGrpCode)){
+                                                                            // the user is already in the group so no need to join
+                                                                            Toast.makeText(getContext(), "you are already on this group", Toast.LENGTH_SHORT).show();
+                                                                            return;
+                                                                        }
+                                                                        newList.add(joinGrpCode);
+                                                                        List<String> strings = new ArrayList<>(newList.size());
+                                                                        for (Object object : newList) {
+                                                                            strings.add(Objects.toString(object, null));
+                                                                        }
+                                                                        db.collection("users").document(user.getUid()).update("groups" , newList )
+                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(Void unused) {
+                                                                                        Log.d("updated" , "updated existing group array");
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+
+                                        Toast.makeText(getContext(), "maybe this one does", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), "check your internet", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
             }
         });
 
@@ -131,7 +253,8 @@ public class CreateFragment extends Fragment {
         });
     }
 
-    private void initCreateGroupChat() {
+    private void initCreateGroupChat(String grpName) {
+        // this function serves as a handler for group image if the user selected one to upload it and save the image uri
         if(grpImgUri != null ){
             StorageReference fileRef = storageReference.child(generatedString);
             fileRef.putFile(grpImgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -140,38 +263,80 @@ public class CreateFragment extends Fragment {
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            createGroupChat(uri);
+                            createGroupChat( grpName , uri);
                         }
                     });
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    createGroupChat(null);
+                    createGroupChat( grpName ,null);
                     Toast.makeText(getContext(), "Couldn't upload the image, try again", Toast.LENGTH_SHORT).show();
                 }
             });
         }
         else {
-            createGroupChat(null);
+            createGroupChat( grpName ,null);
         }
     }
 
-    private void createGroupChat (Uri grpUri){
-        CollectionReference groups =  db.collection("groups");
-        CollectionReference users =  db.collection("users");
+    private void createGroupChat ( String grpName ,Uri grpUri){
+        String participants [] = {user.getUid()};
+        Map<String,Object> newGrp = new HashMap<>();
+        newGrp.put("display_name" , grpName);
+        if(grpUri != null){
+            newGrp.put("uri" , grpUri);
+        }
+        newGrp.put("users" , Arrays.asList(user.getUid()));
 
-        users.document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                //Log.d("vvvx" , .toString());
-                Object grps = documentSnapshot.get("groups");
-                if (grps == null) {
-                    Log.d("ddd" , "umpty");
-                }
+        db.collection("groups").document(generatedString).set(newGrp)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        db.collection("users").document(user.getUid()).get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful()){
+                                            DocumentSnapshot doc = task.getResult();
+                                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("groups");
+                                            if ( data == null) {
+                                                //update the user groups
+                                                db.collection("users").document(user.getUid()).update("groups" , Arrays.asList(generatedString) )
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                Log.d("updated" , "new group array");
+                                                            }
+                                                        });
+                                            }else {
+                                                //push the new code to the users groups
+                                                ArrayList<Object> newList = new ArrayList<Object>(Arrays.asList(data.toArray()));
+                                                newList.add(generatedString);
+                                                List<String> strings = new ArrayList<>(newList.size());
+                                                for (Object object : newList) {
+                                                    strings.add(Objects.toString(object, null));
+                                                }
+                                                db.collection("users").document(user.getUid()).update("groups" , newList )
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+                                                                Log.d("updated" , "updated existing group array");
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-            }
-        });
     }
 
     @Override
@@ -211,5 +376,15 @@ public class CreateFragment extends Fragment {
         }
         // return the resultant string
         return r.toString();
+    }
+
+    private boolean validateGrpName(String name){
+        name = name.trim();
+        if(!name.isEmpty() && name.length()>2 ){
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

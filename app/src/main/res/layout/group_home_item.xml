@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="6dp"
+        android:background="@drawable/home_group_bg_shape"
+        >
+
+        <LinearLayout
+            android:id="@+id/lin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="12dp"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/homeGrpImg"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginHorizontal="16dp"
+                android:src="@drawable/groupdefault"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/cyan"
+                />
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/lin"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/lin"
+            android:fontFamily="@font/lato_bold"
+            android:includeFontPadding="false"
+            android:text="pepe the popo"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:id="@+id/homeGrpName"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/homeGrpName"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="25dp"
+            android:id="@+id/homeGrpCount"
+            android:text="23Mumber" />
+
+    </RelativeLayout>
+
+</LinearLayout>

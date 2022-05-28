@@ -2,21 +2,20 @@ package com.aula.im.youcef.kebiche.avechat;
 
 public class Messages {
     String message;
-    String uid;
     String username;
+    String uid;
     long timeStamp;
 
-    // constructors
 
     public Messages() {
 
     }
 
-    public Messages(String message, String uid, String username, long timeStamp) {
+    public Messages(String message, String uid, long timeStamp) {
         this.message = message;
         this.uid = uid;
         this.timeStamp = timeStamp;
-        this.username = username;
+
     }
 
     // getters and setters
@@ -34,7 +33,6 @@ public class Messages {
         return uid;
     }
 
-    public String getUsername(){return username;}
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -48,5 +46,11 @@ public class Messages {
         this.timeStamp = timeStamp;
     }
 
-    public void setUsername(String username){ this.username = username; }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
