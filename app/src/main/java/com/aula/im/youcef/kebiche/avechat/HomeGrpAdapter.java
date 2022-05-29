@@ -60,6 +60,8 @@ public class HomeGrpAdapter extends BaseAdapter {
         TextView members = (TextView) view.findViewById(R.id.homeGrpCount);
         ImageView grpImg = (ImageView) view.findViewById(R.id.homeGrpImg);
 
+
+
         db.collection("groups").document(ids.get(i)).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

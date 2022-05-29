@@ -49,6 +49,7 @@ public class AuthHandlerMain extends AppCompatActivity {
 
     private void reload () {
         // pass the user to the main menu
+        Log.d("AUTH_APP", "Reload() was called" );
         Intent home = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(home);
         finish();
@@ -68,6 +69,7 @@ public class AuthHandlerMain extends AppCompatActivity {
         String emailVal = email.getText().toString();
         String passVal = password.getText().toString();
 
+
         mAuth.signInWithEmailAndPassword(emailVal, passVal)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -76,6 +78,8 @@ public class AuthHandlerMain extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user'sinformation
                             Log.d("AUTH_APP", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            email.setText("");
+                            password.setText("");
                             reload();
                             //updateUI(user);
                         } else {

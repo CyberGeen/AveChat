@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -58,6 +60,7 @@ public class GroupChat extends AppCompatActivity {
 
     ChatAdapter chatAdapter;
     ArrayList<Messages> messagesArrayList;
+    Map<String,String> uidToUsername = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,10 @@ public class GroupChat extends AppCompatActivity {
         grpNameString = getIntent().getStringExtra("GRP_NAME");
 
         messagesArrayList = new ArrayList<>();
+
+
+        //to prevent multiple calls to the backend we use a one time call :
+        getUidUsername();
 
         setSupportActionBar(grpToolbar);
         grpName.setText(grpNameString);
@@ -111,7 +118,7 @@ public class GroupChat extends AppCompatActivity {
                 //currentTime = SimpleDateFormat.getDateTimeInstance().format(calendar.getTime());
                 Date date=new Date();
                 //create the message object for real time db
-                Messages message = new Messages(msgVal , user.getUid() , date.getTime() );
+                Messages message = new Messages(msgVal.trim() , user.getUid() , date.getTime() );
                 fdb.getReference().child(grpCodeString).push().setValue(message)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -147,12 +154,25 @@ public class GroupChat extends AppCompatActivity {
                     Map<String, Object> td = (HashMap<String, Object>) data.getValue();
                     //Messages messages = new Messages(td.get("message").toString() , td.get("uid").toString() , Long.parseLong(td.get("timeStamp").toString()) );
                     Messages messages = data.getValue(Messages.class);
-                    Log.d("LSJSKJF", "msg: " + messages.getMessage() );
+                    if(messages.getUid() == user.getUid() ){
+                        //no need to insert the username
+                        messagesArrayList.add(messages);
+                    }else{
+                        //we check the uid-username list that's created locally
+                        //if the username is in there and the list isnt umpty we just get it from there
+                        //else we re-fetch the list (solving the problem of a user joining in the middle of a conversation)
+                        if(uidToUsername.get(messages.getUid()) == null){
+                            getUidUsername();
+                        }
+                        messages.setUsername(uidToUsername.get(messages.getUid()));
+                        messagesArrayList.add(messages);
+
+                    }
                     //messages.setMessage(td.get("message").toString());
                     //messages.setMessage(td.get("uid").toString());
                     //messages.setTimeStamp(Long.parseLong(td.get("timeStamp").toString()));
 
-                    messagesArrayList.add(messages);
+
                 }
                 chatAdapter.notifyDataSetChanged();
             }
@@ -162,6 +182,42 @@ public class GroupChat extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void getUidUsername() {
+        db = FirebaseFirestore.getInstance();
+        db.collection("groups").document(grpCodeString).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot doc = task.getResult();
+                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("users");
+                            for(Object object : data ){
+                                db.collection("users").document(object.toString()).get()
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                if(task.isSuccessful()){
+                                                    DocumentSnapshot doc = task.getResult();
+                                                    if(doc == null){
+                                                        Toast.makeText(GroupChat.this, "Problem getting a user", Toast.LENGTH_SHORT).show();
+                                                        return;
+                                                    }
+                                                    Object data = doc.get("display_name");
+                                                    uidToUsername.put(object.toString() , data.toString() );
+                                                    //Log.d("wild"  , " : " + uidToUsername );
+                                                }
+                                            }
+                                        });
+                            }
+                            chatAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+
+
 
     }
 

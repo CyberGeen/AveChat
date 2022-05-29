@@ -5,13 +5,19 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,6 +52,9 @@ public class HomeFragment extends Fragment {
     private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     FirebaseUser user;
+    ConstraintLayout notFoundView ;
+
+    List<String> ids = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +96,8 @@ public class HomeFragment extends Fragment {
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         DocumentReference usr = db.collection("users").document(user.getUid().toString());
+        notFoundView = view.findViewById(R.id.homeNoChatFound);
+
 
         /*
         usr.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -119,6 +130,8 @@ public class HomeFragment extends Fragment {
                 //FIXME also check the array length
                 if ( data == null) {
                     Log.d("vvvvx", "no groups"  );
+                    notFoundView.setVisibility(View.VISIBLE);
+
                 }else {
                     //data.add(<data.size() , "hello">);
                     //Map<String , Object> idk = new HashMap<>();
@@ -145,14 +158,21 @@ public class HomeFragment extends Fragment {
 
                     // turning the group ids to List<String> and passing it to the adapter
                     ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(data.toArray()));
-                    List<String> ids = new ArrayList<>(temp.size());
+                    //fixme ids here
                     for (Object object : temp) {
                         ids.add(Objects.toString(object, null));
                     }
+
+                    //sometimes the code runs before the activity is fully created
+                    //it tries to get views it cant reach
+                    //this simply fix it :
                     if(getActivity()==null) return;
+
+
                     mainListView = (ListView) view.findViewById(R.id.listViewHome);
                     HomeGrpAdapter homeGrpAdapter = new HomeGrpAdapter(getContext(), ids );
                     mainListView.setAdapter(homeGrpAdapter);
+                    registerForContextMenu(mainListView);
                     mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -195,6 +215,33 @@ public class HomeFragment extends Fragment {
         });
 
 
+
+    }
+
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getActivity().getMenuInflater().inflate(R.menu.group_list_menu , menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Log.d("position", "removing item pos=" + ids.get(info.position));
+        Log.d("position" ,  "" + item.getActionView() );
+
+        switch (item.getItemId()){
+            case R.id.getCodeMenuList:
+
+                return true;
+            case R.id.quitGroupMenuList:
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
 
     }
 }

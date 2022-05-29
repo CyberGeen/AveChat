@@ -122,6 +122,7 @@ public class CreateFragment extends Fragment {
                     nameGrpET.setError("invalid name");
                     return;
                 }
+                nameGrpET.setText("");
                 //TODO start loading
                 // start the create process :
                 generatedString = genGroupCode(10);
@@ -144,6 +145,7 @@ public class CreateFragment extends Fragment {
                 }
 
                 //TODO join frp btn
+                joinGrpET.setText("");
 
                 db.collection("groups").document(joinGrpCode).get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -176,11 +178,6 @@ public class CreateFragment extends Fragment {
                                                     }
                                                 });
 
-                                        //we create new instance in realtime database
-                                        DatabaseReference dbr = fdb.getReference();
-                                        Date date = new Date();
-                                        Messages messages = new Messages("Hello!", user.getUid() , date.getTime() );
-                                        dbr.child(generatedString).push().setValue(messages);
 
 
                                         // lastly we update the user own group collection
@@ -218,15 +215,13 @@ public class CreateFragment extends Fragment {
                                                                                     @Override
                                                                                     public void onSuccess(Void unused) {
                                                                                         Log.d("updated" , "updated existing group array");
+                                                                                        startChat(joinGrpCode);
                                                                                     }
                                                                                 });
                                                                     }
                                                                 }
                                                             }
                                                         });
-
-                                        Toast.makeText(getContext(), "maybe this one does", Toast.LENGTH_SHORT).show();
-
                                     }
                                 }
                             }
@@ -306,6 +301,7 @@ public class CreateFragment extends Fragment {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
+                                                                startChat(generatedString);
                                                                 Log.d("updated" , "new group array");
                                                             }
                                                         });
@@ -321,6 +317,7 @@ public class CreateFragment extends Fragment {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
+                                                                startChat(generatedString);
                                                                 Log.d("updated" , "updated existing group array");
                                                             }
                                                         });
@@ -387,4 +384,34 @@ public class CreateFragment extends Fragment {
         }
 
     }
+
+    private void startChat(String code){
+        db.collection("groups").document(code).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot doc = task.getResult();
+                            Object data = doc.getData();
+                            if(data == null){
+                                return;
+                            }
+                            Intent grpIntent = new Intent(getContext(),GroupChat.class);
+                            grpIntent.putExtra("GRP_CODE",code);
+                            Object uriValid = doc.get("uri");
+                            if(uriValid != null){
+                                grpIntent.putExtra("GRP_URI",doc.get("uri").toString());
+                            }
+                            grpIntent.putExtra("GRP_NAME",doc.get("display_name").toString());
+                            startActivity(grpIntent);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Connection Error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

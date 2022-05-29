@@ -56,6 +56,7 @@ public class SettingsFragment extends Fragment  {
     Button updateBtn ;
     private FirebaseFirestore db;
     final int galleryReqCode = 396;
+    final String END_ACTIVITY = "643";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,8 +123,10 @@ public class SettingsFragment extends Fragment  {
                 //FIXME: onbackClick need fix
                 FirebaseAuth.getInstance().signOut();
                 Intent i = new Intent(getContext() , AuthHandlerMain.class);
+                //i.putExtra("END_ACTIVITY" , END_ACTIVITY );
+                //getActivity().getFragmentManager().popBackStack();
                 startActivity(i);
-                getActivity().getFragmentManager().popBackStack();
+                getActivity().finish();
             }
         });
 

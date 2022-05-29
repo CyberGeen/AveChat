@@ -1,6 +1,7 @@
 package com.aula.im.youcef.kebiche.avechat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -89,6 +90,15 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         //FirebaseUser currentUser = mAuth.getCurrentUser();
         //Log.d("ccu" , currentUser.toString());
+        Intent i = getIntent();
+        String requestCode = i.getStringExtra("END_ACTIVITY");
+        if( requestCode != null && requestCode == "643" ){
+            //loggout and finish activity
+            FirebaseAuth.getInstance().signOut();
+            Intent authIntent = new Intent(this , AuthHandlerMain.class);
+            startActivity(authIntent);
+            finish();
+        }
     }
 
     private void replaceFregment (Fragment fragment){
@@ -98,10 +108,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public void testLoggout (View view){
-        FirebaseAuth.getInstance().signOut();
-        Intent i = new Intent(this , AuthHandlerMain.class);
-        startActivity(i);
-        finish();
-    }
+
+
 }
