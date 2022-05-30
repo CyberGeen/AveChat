@@ -161,10 +161,6 @@ public class CreateFragment extends Fragment {
                                         // first we update the list on the group collection field :
                                         ArrayList<Map<String, Object>> users = (ArrayList<Map<String,Object>>) doc.get("users");
                                         ArrayList<Object> newUsers = new ArrayList<Object>(Arrays.asList(users.toArray()));
-                                        if(newUsers.contains(user.getUid())){
-                                            Toast.makeText(getContext(), "you are already in the group", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
                                         newUsers.add(user.getUid());
                                         List<String> strings = new ArrayList<>(newUsers.size());
                                         for (Object object : newUsers) {
@@ -178,6 +174,26 @@ public class CreateFragment extends Fragment {
                                                     }
                                                 });
 
+
+                                        //updating the members since users is needed for the uid calls in chat:
+                                        ArrayList<Map<String, Object>> members = (ArrayList<Map<String,Object>>) doc.get("members");
+                                        ArrayList<Object> newMembers = new ArrayList<Object>(Arrays.asList(members.toArray()));
+                                        if(newMembers.contains(user.getUid())){
+                                            Toast.makeText(getContext(), "you are already in the group", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        newMembers.add(user.getUid());
+                                        List<String> membersString = new ArrayList<>(newMembers.size());
+                                        for (Object object : newMembers) {
+                                            membersString.add(Objects.toString(object, null));
+                                        }
+                                        db.collection("groups").document(joinGrpCode).update("members" , membersString )
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Log.d("updated" , "updated the users list on group");
+                                                    }
+                                                });
 
 
                                         // lastly we update the user own group collection
@@ -283,6 +299,7 @@ public class CreateFragment extends Fragment {
             newGrp.put("uri" , grpUri);
         }
         newGrp.put("users" , Arrays.asList(user.getUid()));
+        newGrp.put("members" , Arrays.asList(user.getUid()));
 
         db.collection("groups").document(generatedString).set(newGrp)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -310,9 +327,12 @@ public class CreateFragment extends Fragment {
                                                 ArrayList<Object> newList = new ArrayList<Object>(Arrays.asList(data.toArray()));
                                                 newList.add(generatedString);
                                                 List<String> strings = new ArrayList<>(newList.size());
+                                                /*
                                                 for (Object object : newList) {
                                                     strings.add(Objects.toString(object, null));
                                                 }
+
+                                                 */
                                                 db.collection("users").document(user.getUid()).update("groups" , newList )
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override

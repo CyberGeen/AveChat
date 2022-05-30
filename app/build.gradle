@@ -28,10 +28,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+
 
 dependencies {
 
@@ -61,6 +63,7 @@ dependencies {
     //for ui design
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.squareup.picasso:picasso:2.8'
+    implementation 'com.github.GrenderG:Toasty:1.5.2'
 }
 
 

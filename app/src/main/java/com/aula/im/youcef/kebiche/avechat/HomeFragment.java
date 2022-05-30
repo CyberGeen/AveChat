@@ -53,6 +53,7 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth mAuth;
     FirebaseUser user;
     ConstraintLayout notFoundView ;
+    HomeGrpAdapter homeGrpAdapter;
 
     List<String> ids = new ArrayList<>();
 
@@ -170,7 +171,7 @@ public class HomeFragment extends Fragment {
 
 
                     mainListView = (ListView) view.findViewById(R.id.listViewHome);
-                    HomeGrpAdapter homeGrpAdapter = new HomeGrpAdapter(getContext(), ids );
+                    homeGrpAdapter = new HomeGrpAdapter(getContext(), ids );
                     mainListView.setAdapter(homeGrpAdapter);
                     registerForContextMenu(mainListView);
                     mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -234,9 +235,15 @@ public class HomeFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.getCodeMenuList:
-
+                //custom class that takes care of showing the code and sharing it
+                DialogueClass codeDialogue = new DialogueClass(ids.get(info.position));
+                codeDialogue.show(getActivity().getSupportFragmentManager() , "DIAG_TAG");
                 return true;
             case R.id.quitGroupMenuList:
+                //to eliminate duplicate code
+                QuitGroupHandler quitGroupHandler = new QuitGroupHandler(ids.get(info.position) , getContext()  );
+                ids.remove(ids.get(info.position));
+                homeGrpAdapter.notifyDataSetChanged();
 
                 return true;
             default:

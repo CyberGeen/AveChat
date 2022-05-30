@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -237,5 +240,29 @@ public class GroupChat extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         chatAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.group_list_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.getCodeMenuList:
+                DialogueClass codeDialogue = new DialogueClass(grpCodeString );
+                codeDialogue.show(getSupportFragmentManager() , "DIAG_TAG");
+                return true;
+            case R.id.quitGroupMenuList:
+                //to eliminate duplicate code
+                QuitGroupHandler quitGroupHandler = new QuitGroupHandler(grpCodeString , getApplicationContext() );
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

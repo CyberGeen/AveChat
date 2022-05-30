@@ -62,6 +62,7 @@ public class HomeGrpAdapter extends BaseAdapter {
 
 
 
+
         db.collection("groups").document(ids.get(i)).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -79,7 +80,7 @@ public class HomeGrpAdapter extends BaseAdapter {
                             if(uri != null ){
                                 Picasso.get().load(doc.get("uri").toString()).into(grpImg);
                             }
-                            ArrayList<Map<String, Object>> count = (ArrayList<Map<String,Object>>) doc.get("users");
+                            ArrayList<Map<String, Object>> count = (ArrayList<Map<String,Object>>) doc.get("members");
                             members.setText(Integer.toString(count.size()) + " Member" );
 
 
@@ -88,4 +89,6 @@ public class HomeGrpAdapter extends BaseAdapter {
                 });
         return view;
     }
+
+
 }
