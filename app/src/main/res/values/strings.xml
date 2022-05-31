@@ -4,9 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- onbarding strings -->
-    <string name="create_chat_ob">you can create your own chat</string>
-    <string name="join_chat_ob">you can join other chats</string>
-    <string name="enjoy_chat_ob">now go and enjoy</string>
+    <string name="create_chat_ob">You can create a group chat for you and for your friends</string>
+    <string name="join_chat_ob">You can join other group chats by group code</string>
+    <string name="enjoy_chat_ob">Have fun and enjoy chatting with your friends!</string>
     <string name="title_activity_drawer_main">DrawerMain</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

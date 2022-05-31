@@ -34,7 +34,7 @@
         android:id="@+id/dots_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="40dp"
         app:dotsColor="#808080"
         app:dotsCornerRadius="8dp"
         app:dotsSize="16dp"

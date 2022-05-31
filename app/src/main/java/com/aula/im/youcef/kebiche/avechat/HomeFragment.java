@@ -84,15 +84,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Intent i = new Intent(getContext(),GroupChat.class);
-        //i.putExtra("GRP_CODE","GRP_CODE");
-        //i.putExtra("GRP_URI" , "");
-        //startActivity(i);
-
-        //FIXME show groups :
-        // todo : fetch data from user
-        // todo : check length and display
-        //CollectionReference ref = db.collection("users");
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -100,63 +91,17 @@ public class HomeFragment extends Fragment {
         notFoundView = view.findViewById(R.id.homeNoChatFound);
 
 
-        /*
-        usr.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d("vvvx" , documentSnapshot.getData().toString() );
-            }
-        });
-
-         */
-
-
-
-
-
-        // FIXME ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::.
         db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot doc = task.getResult();
                 ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("groups");
 
-                //Object [] idk = data.toArray()  ;
-                //List<Object> newData = new ArrayList<Object>(data.toArray()));
-                //Object [] idk2 = new Object[data.size()+1];
-                //idk2[data.size()+1] = "popo";
-
-
-
-                //FIXME also check the array length
                 if ( data == null) {
                     Log.d("vvvvx", "no groups"  );
                     notFoundView.setVisibility(View.VISIBLE);
 
                 }else {
-                    //data.add(<data.size() , "hello">);
-                    //Map<String , Object> idk = new HashMap<>();
-
-                    //data.set(data.size() , "popo");
-
-                    /*
-                    //TODO final code :
-                    ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(data.toArray()));
-                    temp.add("idkMNASNDMA");
-                    List<String> strings = new ArrayList<>(temp.size());
-                    for (Object object : temp) {
-                        strings.add(Objects.toString(object, null));
-                    }
-                    db.collection("users").document(user.getUid()).update("groups" , temp )
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Log.d("updated" , "updated");
-                                }
-                            });
-                            Log.d("vvvvx", " : " + strings.size() );
-                     */
-
                     // turning the group ids to List<String> and passing it to the adapter
                     ArrayList<Object> temp = new ArrayList<Object>(Arrays.asList(data.toArray()));
                     //fixme ids here
@@ -209,9 +154,6 @@ public class HomeFragment extends Fragment {
                     });
 
                 }
-
-                if(task.isSuccessful()) Log.d("vvvvx","succ");
-                    else  Log.d("vvvvx","failer");
             }
         });
 

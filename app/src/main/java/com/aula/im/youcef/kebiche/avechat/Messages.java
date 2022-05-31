@@ -1,9 +1,15 @@
 package com.aula.im.youcef.kebiche.avechat;
 
+import android.net.Uri;
+
 public class Messages {
     String message;
     String username;
     String uid;
+    Uri uri = null;
+
+
+
     long timeStamp;
 
 
@@ -17,6 +23,7 @@ public class Messages {
         this.timeStamp = timeStamp;
 
     }
+
 
     // getters and setters
 
@@ -52,5 +59,13 @@ public class Messages {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 }

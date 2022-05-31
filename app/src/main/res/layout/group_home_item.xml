@@ -45,7 +45,7 @@
             android:layout_toEndOf="@+id/lin"
             android:fontFamily="@font/lato_bold"
             android:includeFontPadding="false"
-            android:text="pepe the popo"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -61,7 +61,7 @@
             android:layout_marginTop="14dp"
             android:layout_marginEnd="25dp"
             android:id="@+id/homeGrpCount"
-            android:text="23Mumber" />
+            android:text="" />
 
     </RelativeLayout>
 

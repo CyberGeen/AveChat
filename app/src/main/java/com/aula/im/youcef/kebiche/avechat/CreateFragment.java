@@ -101,18 +101,6 @@ public class CreateFragment extends Fragment {
         nameGrpET = (EditText) view.findViewById(R.id.nameGrpET);
 
 
-        //FIXME on create :
-        // todo : go the user id table and retreive chat group codes
-        // todo : insert the new code
-        // todo : create new chat table and add the user to it
-        // todo : start the intent to the page with the code given
-
-
-        //FIXME on join
-        // todo : check if the code exists on the table if not show error
-        // todo : add the code to the user
-        // todo : goto chat table and add the new user to the list
-
         createGrpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,6 +199,7 @@ public class CreateFragment extends Fragment {
                                                                                     @Override
                                                                                     public void onSuccess(Void unused) {
                                                                                         Log.d("updated" , "new group array");
+                                                                                        startChat(joinGrpCode);
                                                                                     }
                                                                                 });
                                                                     }else {
@@ -327,12 +316,7 @@ public class CreateFragment extends Fragment {
                                                 ArrayList<Object> newList = new ArrayList<Object>(Arrays.asList(data.toArray()));
                                                 newList.add(generatedString);
                                                 List<String> strings = new ArrayList<>(newList.size());
-                                                /*
-                                                for (Object object : newList) {
-                                                    strings.add(Objects.toString(object, null));
-                                                }
 
-                                                 */
                                                 db.collection("users").document(user.getUid()).update("groups" , newList )
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override

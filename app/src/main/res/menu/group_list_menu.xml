@@ -6,7 +6,7 @@
         app:showAsAction="never"
         />
     <item android:id="@+id/quitGroupMenuList"
-        android:title="Quit the group"
+        android:title="Leave the group"
         app:showAsAction="never"
         />
 </menu>

@@ -38,6 +38,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText email , password , username ;
@@ -130,9 +132,6 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //Log.d("AUTH_APP", "createUserWithEmail:success");
-                            //Toast.makeText(newUserActivity.this, "User account added.", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             //boolean emailVerified = false ;
@@ -151,7 +150,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.d("vvx" , e.toString()) ;
+                                    Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
                                 }
                             });
 
@@ -223,16 +222,15 @@ public class RegisterActivity extends AppCompatActivity {
                                         });
                             }
 
-
-
-
-                            //updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w("AUTH_APP", "createUserWithEmail:failure",task.getException());
-                            //Toast.makeText(newUserActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
                     }
                 });
     }

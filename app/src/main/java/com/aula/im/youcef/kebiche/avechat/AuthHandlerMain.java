@@ -12,10 +12,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import es.dmoral.toasty.Toasty;
 
 public class AuthHandlerMain extends AppCompatActivity {
 
@@ -86,9 +89,12 @@ public class AuthHandlerMain extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Log.w("AUTH_APP", "signInWithEmail:failure",
                                     task.getException());
-                            //Toast.makeText(MainActivity.this, "Authentication failed.",Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
                     }
                 });
 
@@ -117,12 +123,11 @@ public class AuthHandlerMain extends AppCompatActivity {
 
     private boolean validatePassword(){
         String passVal = password.getText().toString();
-        String passPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{6,20}$";
-        if(!passVal.isEmpty() && passVal.matches(passPattern) ){
+        if(!passVal.isEmpty() ){
             password.setError(null);
             return true;
         } else {
-            password.setError("weak password");
+            password.setError("This field is required");
             return false;
         }
     }

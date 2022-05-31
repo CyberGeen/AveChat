@@ -55,7 +55,7 @@ public class QuitGroupHandler extends Application {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-                                        Toasty.warning(context, "Group Quited.", Toast.LENGTH_SHORT, true).show();
+                                        Toasty.warning(context, "You left the group.", Toast.LENGTH_SHORT, true).show();
                                     }
                                 });
 

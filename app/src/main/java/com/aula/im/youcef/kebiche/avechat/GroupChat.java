@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -42,12 +45,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public class GroupChat extends AppCompatActivity {
 
     EditText userMsgET;
     ImageButton  backBtn ;
-    CardView msgCardView;
     Toolbar grpToolbar;
     ImageView groupImg , sendBtn ;
     TextView grpName , msgET ;
@@ -64,11 +68,19 @@ public class GroupChat extends AppCompatActivity {
     ChatAdapter chatAdapter;
     ArrayList<Messages> messagesArrayList;
     Map<String,String> uidToUsername = new HashMap<>();
+    Map<String,Uri> uidToUri = new HashMap<>();
+    LinearLayoutManager linearLayoutManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_chat);
+
+
 
         userMsgET = findViewById(R.id.insertMsgET);
         sendBtn = findViewById(R.id.sendMsgBtn);
@@ -86,7 +98,11 @@ public class GroupChat extends AppCompatActivity {
         messagesArrayList = new ArrayList<>();
 
 
-        //to prevent multiple calls to the backend we use a one time call :
+
+        fdb = FirebaseDatabase.getInstance("https://avechat-b0e8a-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference databaseReference = fdb.getReference(grpCodeString);
+
+        getProfileUri();
         getUidUsername();
 
         setSupportActionBar(grpToolbar);
@@ -95,8 +111,9 @@ public class GroupChat extends AppCompatActivity {
             Picasso.get().load(grpImgUri).into(groupImg);
         }
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
+
         recycler.setLayoutManager(linearLayoutManager);
 
         chatAdapter = new ChatAdapter(GroupChat.this , messagesArrayList);
@@ -118,7 +135,6 @@ public class GroupChat extends AppCompatActivity {
                 if(msgVal.isEmpty()) return;
 
                 //get the current time for sorting
-                //currentTime = SimpleDateFormat.getDateTimeInstance().format(calendar.getTime());
                 Date date=new Date();
                 //create the message object for real time db
                 Messages message = new Messages(msgVal.trim() , user.getUid() , date.getTime() );
@@ -141,52 +157,10 @@ public class GroupChat extends AppCompatActivity {
 
             }
         });
-        Log.d("kkdkdkdkd" , grpCodeString );
-        fdb = FirebaseDatabase.getInstance("https://avechat-b0e8a-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference databaseReference = fdb.getReference(grpCodeString);
-
-
-        //todo delete this :
-        //chatAdapter = new ChatAdapter(GroupChat.this , messagesArrayList);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                messagesArrayList.clear();
-                for (DataSnapshot data : snapshot.getChildren()){
-                    Log.d("LSJSKJF", ": " + data.getValue(Messages.class) );
-                    Map<String, Object> td = (HashMap<String, Object>) data.getValue();
-                    //Messages messages = new Messages(td.get("message").toString() , td.get("uid").toString() , Long.parseLong(td.get("timeStamp").toString()) );
-                    Messages messages = data.getValue(Messages.class);
-                    if(messages.getUid() == user.getUid() ){
-                        //no need to insert the username
-                        messagesArrayList.add(messages);
-                    }else{
-                        //we check the uid-username list that's created locally
-                        //if the username is in there and the list isnt umpty we just get it from there
-                        //else we re-fetch the list (solving the problem of a user joining in the middle of a conversation)
-                        if(uidToUsername.get(messages.getUid()) == null){
-                            getUidUsername();
-                        }
-                        messages.setUsername(uidToUsername.get(messages.getUid()));
-                        messagesArrayList.add(messages);
-
-                    }
-                    //messages.setMessage(td.get("message").toString());
-                    //messages.setMessage(td.get("uid").toString());
-                    //messages.setTimeStamp(Long.parseLong(td.get("timeStamp").toString()));
-
-
-                }
-                chatAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
     }
+
+
 
     private void getUidUsername() {
         db = FirebaseFirestore.getInstance();
@@ -195,6 +169,7 @@ public class GroupChat extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if(task.isSuccessful()){
+                            Log.d("GRP" , "username" );
                             DocumentSnapshot doc = task.getResult();
                             ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("users");
                             for(Object object : data ){
@@ -213,14 +188,97 @@ public class GroupChat extends AppCompatActivity {
                                                     //Log.d("wild"  , " : " + uidToUsername );
                                                 }
                                             }
+
                                         });
                             }
-                            chatAdapter.notifyDataSetChanged();
+
                         }
                     }
                 });
 
+    }
 
+    private void listener () {
+        DatabaseReference databaseReference = fdb.getReference(grpCodeString);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("GRP" , "ondatachange" );
+                messagesArrayList.clear();
+                for (DataSnapshot data : snapshot.getChildren()){
+                    Map<String, Object> td = (HashMap<String, Object>) data.getValue();
+                    //Messages messages = new Messages(td.get("message").toString() , td.get("uid").toString() , Long.parseLong(td.get("timeStamp").toString()) );
+                    Messages messages = data.getValue(Messages.class);
+                    if(messages.getUid() == user.getUid() ){
+                        //no need to insert the username
+                        messagesArrayList.add(messages);
+                    }else{
+                        messages.setUsername(uidToUsername.get(messages.getUid()));
+                        if(messages.getUsername() == null){
+                            //new member joined probably , need a new fetch
+                            getUidUsername();
+                            getProfileUri();
+                        }
+                        //fixme its here :
+                        //UserRecord userRecord = FirebaseAuth.getInstance().getUser(uid);
+                        if(uidToUri.get(messages.getUid()) != null ){
+                            messages.setUri(uidToUri.get(messages.getUid()));
+                        }
+                        messagesArrayList.add(messages);
+
+
+                    }
+                }
+                chatAdapter.notifyDataSetChanged();
+                linearLayoutManager.scrollToPosition(messagesArrayList.size() - 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getProfileUri(){
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("groups").document(grpCodeString).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            Log.d("GRP" , "uri" );
+                            DocumentSnapshot doc = task.getResult();
+                            ArrayList<Map<String, Object>> data = (ArrayList<Map<String,Object>>) doc.get("users");
+                            for(Object object : data ){
+                                StorageReference fileRef = storageReference.child(object.toString());
+                                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        uidToUri.put(object.toString() , uri );
+                                        Log.d("tg" , uidToUri.toString() );
+
+                                        listener();
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        uidToUri.put(object.toString() , null );
+
+
+                                        listener();
+
+                                    }
+                                });
+
+                            }
+
+                        }
+                    }
+                });
 
     }
 
@@ -234,6 +292,15 @@ public class GroupChat extends AppCompatActivity {
         calendar = Calendar.getInstance();
         user = mAuth.getCurrentUser();
         uid = user.getUid();
+
+        //to prevent multiple calls to the backend we use a one time call :
+        if (uidToUri == null){
+            getProfileUri();
+        }
+        if(uidToUsername == null){
+            getUidUsername();
+        }
+
     }
 
     @Override

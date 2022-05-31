@@ -27,11 +27,6 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity {
 
     //NOTE for the teacher : the main activity or the start , starts from splash screen and goes to AuthHandlerMain
-    private FirebaseAuth mAuth;
-    Uri photoUri ;
-    String name ;
-    ImageView pp;
-    StorageReference storageReference;
     ActivityMainBinding binding;
 
     @Override
@@ -59,37 +54,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-
-/*
-        mAuth = FirebaseAuth.getInstance();
-
-        pp = findViewById(R.id.testProfilePic);
-
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        photoUri = user.getPhotoUrl();
-        name = user.getDisplayName();
-
-
-
-        storageReference = FirebaseStorage.getInstance().getReference();
-
-        StorageReference picRef = storageReference.child(user.getUid());
-        picRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if(uri != null){
-                    Picasso.get().load(uri).into(pp);
-                }
-            }
-        }); */
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //FirebaseUser currentUser = mAuth.getCurrentUser();
-        //Log.d("ccu" , currentUser.toString());
+
         Intent i = getIntent();
         String requestCode = i.getStringExtra("END_ACTIVITY");
         if( requestCode != null && requestCode == "643" ){
