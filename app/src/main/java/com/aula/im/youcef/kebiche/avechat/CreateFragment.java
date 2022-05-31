@@ -50,6 +50,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
+import es.dmoral.toasty.Toasty;
+
 public class CreateFragment extends Fragment {
 
     MaterialButton createGrpBtn ;
@@ -144,7 +146,7 @@ public class CreateFragment extends Fragment {
                                     Object data = doc.getData();
                                     if(data == null ) {
                                         // no group found
-                                        joinGrpET.setError("no such a group exist");
+                                        Toasty.warning(getContext(), "This group doesn't exist.", Toast.LENGTH_SHORT, true).show();
                                     }else {
                                         // first we update the list on the group collection field :
                                         ArrayList<Map<String, Object>> users = (ArrayList<Map<String,Object>>) doc.get("users");

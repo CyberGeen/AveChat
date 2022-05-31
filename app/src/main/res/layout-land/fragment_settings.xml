@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView6"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/grpImgCreate"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/settingsbg"
+
+            app:lottie_repeatCount="1000"
+            app:lottie_repeatMode="restart" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/grpImgCreate"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/defprofilepic"
+            app:civ_border_color="#60BFC1"
+            app:civ_border_width="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.525"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/usernameTVSettings"
+            style="@style/TextAppearance.AppCompat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Username"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.513"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/grpImgCreate" />
+
+        <TextView
+            android:id="@+id/emailTVSettings"
+            style="@style/TextAppearance.AppCompat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/usernameTVSettings"
+            android:layout_marginTop="8dp"
+            android:text="email@ipcb.pt"
+            android:textColor="#5D5C5C"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/usernameTVSettings" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/createGrbBtn"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#00FFFFFF"
+            android:text="Logout
+"
+            android:textColor="#60BFC1"
+
+            app:layout_constraintEnd_toStartOf="@+id/joinGrpBtn"
+            app:layout_constraintHorizontal_bias="0.114"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="@+id/joinGrpBtn"
+            app:layout_constraintVertical_bias="0.229"
+            app:rippleColor="#60BFC1"
+            app:strokeColor="#60BFC1"
+            app:strokeWidth="2dp" />
+
+        <EditText
+            android:id="@+id/updateUsernameSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="User Name"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.522"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/emailTVSettings" />
+
+        <EditText
+            android:id="@+id/updateEmailSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_baseline_email_24"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.522"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/updateUsernameSettings" />
+
+        <Button
+            android:id="@+id/joinGrpBtn"
+            android:layout_width="209dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#60BFC1"
+            android:clickable="false"
+            android:onClick="onRegisterClick"
+            android:text="update"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/createGrbBtn"
+            app:layout_constraintTop_toBottomOf="@+id/updateEmailSettings" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
