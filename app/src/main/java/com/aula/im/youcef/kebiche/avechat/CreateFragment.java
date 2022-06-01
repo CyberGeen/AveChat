@@ -66,6 +66,7 @@ public class CreateFragment extends Fragment {
     FirebaseUser user;
     final int galleryReqCode = 396;
     String generatedString;
+    LoadingDialogue loadingDialogue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,9 @@ public class CreateFragment extends Fragment {
         grpImg = (ImageView) view.findViewById(R.id.grpImgCreate);
         nameGrpET = (EditText) view.findViewById(R.id.nameGrpET);
 
+        //initialising Loading dialogue :
+        loadingDialogue = new LoadingDialogue(getActivity());
+
 
         createGrpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +120,7 @@ public class CreateFragment extends Fragment {
                 //TODO start loading
                 // start the create process :
                 generatedString = genGroupCode(10);
+                loadingDialogue.startLoadingAnimation();
                 initCreateGroupChat(grpNameValue);
             }
 
@@ -134,7 +139,7 @@ public class CreateFragment extends Fragment {
                     return;
                 }
 
-                //TODO join frp btn
+                loadingDialogue.startLoadingAnimation();
                 joinGrpET.setText("");
 
                 db.collection("groups").document(joinGrpCode).get()
@@ -147,6 +152,7 @@ public class CreateFragment extends Fragment {
                                     if(data == null ) {
                                         // no group found
                                         Toasty.warning(getContext(), "This group doesn't exist.", Toast.LENGTH_SHORT, true).show();
+                                        loadingDialogue.stopLoadingAnimation();
                                     }else {
                                         // first we update the list on the group collection field :
                                         ArrayList<Map<String, Object>> users = (ArrayList<Map<String,Object>>) doc.get("users");
@@ -170,6 +176,7 @@ public class CreateFragment extends Fragment {
                                         ArrayList<Object> newMembers = new ArrayList<Object>(Arrays.asList(members.toArray()));
                                         if(newMembers.contains(user.getUid())){
                                             Toast.makeText(getContext(), "you are already in the group", Toast.LENGTH_SHORT).show();
+                                            loadingDialogue.stopLoadingAnimation();
                                             return;
                                         }
                                         newMembers.add(user.getUid());
@@ -201,7 +208,13 @@ public class CreateFragment extends Fragment {
                                                                                     @Override
                                                                                     public void onSuccess(Void unused) {
                                                                                         Log.d("updated" , "new group array");
+                                                                                        loadingDialogue.stopLoadingAnimation();
                                                                                         startChat(joinGrpCode);
+                                                                                    }
+                                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                                                    @Override
+                                                                                    public void onFailure(@NonNull Exception e) {
+                                                                                        loadingDialogue.stopLoadingAnimation();
                                                                                     }
                                                                                 });
                                                                     }else {
@@ -210,6 +223,7 @@ public class CreateFragment extends Fragment {
                                                                         if(newList.contains(joinGrpCode)){
                                                                             // the user is already in the group so no need to join
                                                                             Toast.makeText(getContext(), "you are already on this group", Toast.LENGTH_SHORT).show();
+                                                                            loadingDialogue.stopLoadingAnimation();
                                                                             return;
                                                                         }
                                                                         newList.add(joinGrpCode);
@@ -222,6 +236,7 @@ public class CreateFragment extends Fragment {
                                                                                     @Override
                                                                                     public void onSuccess(Void unused) {
                                                                                         Log.d("updated" , "updated existing group array");
+                                                                                        loadingDialogue.stopLoadingAnimation();
                                                                                         startChat(joinGrpCode);
                                                                                     }
                                                                                 });
@@ -236,6 +251,7 @@ public class CreateFragment extends Fragment {
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(getContext(), "check your internet", Toast.LENGTH_SHORT).show();
+                                loadingDialogue.stopLoadingAnimation();
                             }
                         });
 
@@ -312,6 +328,11 @@ public class CreateFragment extends Fragment {
                                                                 startChat(generatedString);
                                                                 Log.d("updated" , "new group array");
                                                             }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                loadingDialogue.stopLoadingAnimation();
+                                                            }
                                                         });
                                             }else {
                                                 //push the new code to the users groups
@@ -326,6 +347,11 @@ public class CreateFragment extends Fragment {
                                                                 startChat(generatedString);
                                                                 Log.d("updated" , "updated existing group array");
                                                             }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                loadingDialogue.stopLoadingAnimation();
+                                                            }
                                                         });
                                             }
                                         }
@@ -337,6 +363,7 @@ public class CreateFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getContext(), e.getMessage() , Toast.LENGTH_SHORT).show();
+                        loadingDialogue.stopLoadingAnimation();
                     }
                 });
 
@@ -409,6 +436,7 @@ public class CreateFragment extends Fragment {
                                 grpIntent.putExtra("GRP_URI",doc.get("uri").toString());
                             }
                             grpIntent.putExtra("GRP_NAME",doc.get("display_name").toString());
+                            loadingDialogue.stopLoadingAnimation();
                             startActivity(grpIntent);
                         }
                     }
@@ -416,6 +444,7 @@ public class CreateFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getContext(), "Connection Error", Toast.LENGTH_SHORT).show();
+                        loadingDialogue.stopLoadingAnimation();
                     }
                 });
     }

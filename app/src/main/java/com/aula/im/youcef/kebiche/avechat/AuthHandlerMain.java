@@ -24,6 +24,7 @@ public class AuthHandlerMain extends AppCompatActivity {
 
     EditText email , password ;
     private FirebaseAuth mAuth;
+    LoadingDialogue loadingDialogue;
 
 
     @Override
@@ -36,6 +37,9 @@ public class AuthHandlerMain extends AppCompatActivity {
         //initialising email and password for
         email = findViewById(R.id.editTextEmailRegister);
         password = findViewById(R.id.editTextPasswordRegister);
+
+        //initialising Loading dialogue :
+        loadingDialogue = new LoadingDialogue(AuthHandlerMain.this);
 
     }
 
@@ -72,6 +76,7 @@ public class AuthHandlerMain extends AppCompatActivity {
         String emailVal = email.getText().toString();
         String passVal = password.getText().toString();
 
+        loadingDialogue.startLoadingAnimation();
 
         mAuth.signInWithEmailAndPassword(emailVal, passVal)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -85,8 +90,10 @@ public class AuthHandlerMain extends AppCompatActivity {
                             password.setText("");
                             reload();
                             //updateUI(user);
+                            loadingDialogue.stopLoadingAnimation();
                         } else {
                             // If sign in fails, display a message to the user.
+                            loadingDialogue.stopLoadingAnimation();
                             Log.w("AUTH_APP", "signInWithEmail:failure",
                                     task.getException());
                         }
@@ -95,6 +102,7 @@ public class AuthHandlerMain extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
+                        loadingDialogue.stopLoadingAnimation();
                     }
                 });
 

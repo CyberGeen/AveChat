@@ -49,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     ImageView profilePic;
     StorageReference storageReference;
     private FirebaseFirestore db;
+    LoadingDialogue loadingDialogue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,9 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
+
+        //Loading dialogue
+        loadingDialogue = new LoadingDialogue(RegisterActivity.this);
     }
 
 
@@ -80,7 +84,10 @@ public class RegisterActivity extends AppCompatActivity {
         if(!(emailValid && passValid && usernameValid)){
             return;
         }
-        else registerHandler();
+        else {
+            loadingDialogue.startLoadingAnimation();
+            registerHandler();
+        }
     }
 
     public void onProfileClick (View view){
@@ -231,6 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toasty.error(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG, true).show();
+                        loadingDialogue.stopLoadingAnimation();
                     }
                 });
     }
@@ -238,6 +246,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void reload() {
         // pass the user to the main menu
+        loadingDialogue.stopLoadingAnimation();
         Intent home = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(home);
         finish();
